@@ -1,0 +1,12 @@
+{
+    "name": "discord-bot-template",
+    "main": "index.ts",
+    "scripts": {
+        "start": "ts-node index.ts"
+    },
+    "dependencies": {
+        "discord.js": "^14.3.0",
+        "dotenv": "^16.0.2",
+        "ts-node": "^10.9.1"
+    }
+}
