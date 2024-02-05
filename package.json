@@ -2,11 +2,18 @@
     "name": "discord-bot-template",
     "main": "index.ts",
     "scripts": {
-        "start": "ts-node index.ts"
+        "start": "ts-node index.ts",
+        "dev": "nodemon index.ts",
+        "prisma": "prisma db push"
     },
     "dependencies": {
-        "discord.js": "^14.3.0",
-        "dotenv": "^16.0.2",
-        "ts-node": "^10.9.1"
+        "discord.js": "^14.14.1"
+    },
+    "devDependencies": {
+        "@prisma/client": "^5.9.1",
+        "dotenv": "^16.3.1",
+        "nodemon": "^3.0.2",
+        "prisma": "^5.9.1",
+        "ts-node": "^10.9.2"
     }
 }

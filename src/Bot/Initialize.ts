@@ -29,23 +29,23 @@ export default function Initialize(bot: Bot): void {
 		if (interaction instanceof ChatInputCommandInteraction) {
 			const slashCommand: SlashCommand | undefined = slashCommands.get(interaction.commandName);
 			if (slashCommand === undefined) return;
-			await slashCommand.onInteract(bot, interaction);
+			slashCommand.onInteract(bot, interaction);
 		} else if (interaction instanceof ContextMenuCommandInteraction) {
 			const contextMenuCommand: ContextMenuCommand | undefined = contextMenuCommands.get(interaction.commandName);
 			if (contextMenuCommand === undefined) return;
-			await contextMenuCommand.onInteract(bot, interaction);
+			contextMenuCommand.onInteract(bot, interaction);
 		} else if (interaction instanceof ButtonInteraction) {
 			const button: Button | undefined = buttons.get(interaction.customId);
 			if (button === undefined) return;
-			await button.onInteract(bot, interaction);
+			button.onInteract(bot, interaction);
 		} else if (interaction instanceof ModalSubmitInteraction) {
 			const modal: Modal | undefined = modals.get(interaction.customId);
 			if (modal === undefined) return;
-			await modal.onInteract(bot, interaction);
+			modal.onInteract(bot, interaction);
 		} else if (interaction instanceof SelectMenuInteraction) {
 			const selectMenu: SelectMenu | undefined = selectMenus.get(interaction.customId);
 			if (selectMenu === undefined) return;
-			await selectMenu.onInteract(bot, interaction);
+			selectMenu.onInteract(bot, interaction);
 		}
 	});
 	const commandData: ApplicationCommandDataResolvable[] = [];
