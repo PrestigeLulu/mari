@@ -1,7 +1,7 @@
-import {italic, SlashCommandBuilder, TextChannel} from 'discord.js';
+import {SlashCommandBuilder, TextChannel} from 'discord.js';
 import SlashCommand from '../../Structures/SlashCommand';
 import {getDefaultEmbed, getColorEmbed} from '../../Util/EmbedUtil';
-import {prisma} from '../../Util/Prisma';
+import {upsertGuild} from '../../Util/Util';
 
 const slashCommand = new SlashCommandBuilder()
 	.setName('봇채널설정')
@@ -29,20 +29,7 @@ const setChannelCommand = new SlashCommand(slashCommand, async function (bot, in
 		files: [`${__dirname}/../../Image/mari.jpg`]
 	});
 	const messageId = message.id;
-	await prisma.guild.upsert({
-		where: {
-			id: interaction.guildId
-		},
-		update: {
-			channelId: channel.id,
-			messageId: messageId
-		},
-		create: {
-			id: interaction.guildId,
-			channelId: channel.id,
-			messageId: messageId
-		}
-	});
+	await upsertGuild(interaction.guildId, channel.id, messageId);
 	await interaction.reply({
 		embeds: [
 			getColorEmbed()

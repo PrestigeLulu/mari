@@ -14,4 +14,14 @@ model Guild {
   id String @id
   channelId String
   messageId String
+  musics Music[]
+}
+
+
+model Music {
+  id String @id @default(uuid())
+  createdAt DateTime @default(now())
+  guild Guild @relation(fields: [guildId], references: [id])
+  guildId String
+  url String
 }

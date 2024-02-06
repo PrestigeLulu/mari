@@ -1,3 +1,4 @@
 import Bot from './src/Bot/Bot';
 
-new Bot().login();
+export const bot = new Bot();
+bot.login();
