@@ -5,6 +5,7 @@ import { getFailEmbed } from "../../Util/EmbedUtil";
 import { addMusic, skipMusic } from "../../Util/Queue";
 import { joinVoiceChannel } from "@discordjs/voice";
 import { getGuild } from "../../Util/Util";
+import ytSearch, { SearchResult } from "yt-search";
 
 const Ready = new Event("messageCreate", async function (
   bot,
@@ -25,14 +26,14 @@ const Ready = new Event("messageCreate", async function (
   // 스킵
   if (song.startsWith("s")) {
     const number = song.split(" ")[1] || "1";
-    console.log(number);
     if (isNaN(Number(number))) return;
     await skipMusic(message.guildId, Number(number));
     return;
   }
   // 제목으로 찾기
-  const yt_info = (await play.search(song, { limit: 1 }))[0];
-  if (!yt_info) {
+  const videos = (await ytSearch(song)).videos;
+  const video = videos[0];
+  if (!video) {
     const res = await message.channel.send({
       content: message.author.toString(),
       embeds: [getFailEmbed()],
@@ -49,7 +50,7 @@ const Ready = new Event("messageCreate", async function (
     guildId: message.guildId,
     adapterCreator: message.guild.voiceAdapterCreator,
   });
-  await addMusic(message.guildId, yt_info.url);
+  await addMusic(message.guildId, video.url);
 });
 
 export default Ready;

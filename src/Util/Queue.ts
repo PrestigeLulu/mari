@@ -11,6 +11,7 @@ import play from "play-dl";
 import { getDefaultEmbed, getMusicEmbed } from "./EmbedUtil";
 import path from "path";
 import ytdl from "ytdl-core-discord";
+import ytSearch from "yt-search";
 
 export async function getMusics(guildId: string) {
   return prisma.music.findMany({
@@ -49,7 +50,7 @@ export async function addMusic(guildId: string, url: string) {
       console.log("Playing music");
     }
   } catch (e: any) {
-    console.log(e);
+    console.log(e.message);
   }
 }
 
@@ -108,11 +109,9 @@ export async function playMusic(guildId: string) {
       console.log("No connection found");
       return;
     }
-    const yt_info = await play.video_info(musics.url);
-    if (!yt_info) {
-      console.log("No info found");
-      return;
-    }
+    // musics.url ?v= 다음부터
+    const id = musics.url.split("?v=")[1];
+    const video = await ytSearch({ videoId: id });
     // const stream = await play.stream_from_info(yt_info);
     /* const resource = createAudioResource(stream.stream, {
       inputType: stream.type,
@@ -149,7 +148,7 @@ export async function playMusic(guildId: string) {
       return;
     }
     await message.edit({
-      embeds: [getMusicEmbed(yt_info.video_details)],
+      embeds: [getMusicEmbed(video)],
       files: [],
     });
   } catch (e: any) {
