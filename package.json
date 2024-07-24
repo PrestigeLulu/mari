@@ -16,10 +16,10 @@
   },
   "devDependencies": {
     "@discordjs/voice": "^0.16.1",
-    "@prisma/client": "^5.9.1",
+    "@prisma/client": "^5.17.0",
     "dotenv": "^16.3.1",
     "nodemon": "^3.0.2",
-    "prisma": "^5.15.0",
+    "prisma": "^5.17.0",
     "ts-node": "^10.9.2"
   }
 }
