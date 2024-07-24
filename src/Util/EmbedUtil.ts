@@ -1,6 +1,4 @@
 import { EmbedBuilder } from "discord.js";
-import { YouTubeVideo } from "play-dl";
-import { getTime } from "./Util";
 import { VideoMetadataResult } from "yt-search";
 
 export const getColorEmbed = () => new EmbedBuilder().setColor("#cf85ff");

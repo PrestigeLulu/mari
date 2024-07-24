@@ -1,11 +1,10 @@
 import Event from "../../Structures/Event";
 import { Message } from "discord.js";
-import play from "play-dl";
 import { getFailEmbed } from "../../Util/EmbedUtil";
 import { addMusic, skipMusic } from "../../Util/Queue";
 import { joinVoiceChannel } from "@discordjs/voice";
 import { getGuild } from "../../Util/Util";
-import ytSearch, { SearchResult } from "yt-search";
+import ytSearch from "yt-search";
 
 const Ready = new Event("messageCreate", async function (
   bot,

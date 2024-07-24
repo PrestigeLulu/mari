@@ -8,8 +8,22 @@ const slash = new SlashCommandBuilder()
   .setDefaultMemberPermissions(PermissionFlagsBits.Administrator);
 
 const command = new SlashCommand(slash, async (bot, interaction) => {
-  await prisma.music.deleteMany();
-  await interaction.reply({ content: "Resetted the queue", ephemeral: true });
+  const guild = interaction.guild;
+  if (!guild) return;
+  try {
+    await prisma.music.deleteMany({
+      where: {
+        guildId: guild.id,
+      },
+    });
+    await interaction.reply({ content: "Resetted the queue", ephemeral: true });
+  } catch (e: any) {
+    console.error(e);
+    await interaction.reply({
+      content: "Failed to reset the queue",
+      ephemeral: true,
+    });
+  }
 });
 
 export default command;

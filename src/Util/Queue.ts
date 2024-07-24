@@ -7,10 +7,8 @@ import {
   getVoiceConnection,
   VoiceConnectionConnectingState,
 } from "@discordjs/voice";
-import play from "play-dl";
 import { getDefaultEmbed, getMusicEmbed } from "./EmbedUtil";
-import path from "path";
-import ytdl from "ytdl-core-discord";
+import ytdl from "@distube/ytdl-core";
 import ytSearch from "yt-search";
 
 export async function getMusics(guildId: string) {
@@ -116,14 +114,10 @@ export async function playMusic(guildId: string) {
     /* const resource = createAudioResource(stream.stream, {
       inputType: stream.type,
     }); */
-    const stream = await ytdl(musics.url, {
+    const stream = ytdl(musics.url, {
       filter: "audioonly",
-      // format: "mp3",
-      highWaterMark: 1 << 62,
-      liveBuffer: 1 << 62,
-      dlChunkSize: 0, //disabling chunking is recommended in discord bot
-      // bitrate: 128,
-      quality: "lowestaudio",
+      highWaterMark: 1 << 30,
+      liveBuffer: 1 << 30,
     });
     let resource = createAudioResource(stream);
     /* let resource = createAudioResource(stream.stream, {
@@ -141,6 +135,9 @@ export async function playMusic(guildId: string) {
       } catch (e) {
         console.log(e);
       }
+    });
+    player.on("error", async (error: any) => {
+      throw Error("Error: " + error.message);
     });
     const message = await getMainMessage(guildId);
     if (!message) {
