@@ -23,7 +23,7 @@ const Ready = new Event("messageCreate", async function (
   if (!voiceChannel) return;
   const song = message.content;
   // 스킵
-  if (song.startsWith("s")) {
+  if (song.startsWith("!s")) {
     const number = song.split(" ")[1] || "1";
     if (isNaN(Number(number))) return;
     await skipMusic(message.guildId, Number(number));
