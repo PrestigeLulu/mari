@@ -137,7 +137,7 @@ export async function playMusic(guildId: string) {
       }
     });
     player.on("error", async (error: any) => {
-      throw Error("Error: " + error.message);
+      console.log(error);
     });
     const message = await getMainMessage(guildId);
     if (!message) {
