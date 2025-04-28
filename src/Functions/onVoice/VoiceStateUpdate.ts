@@ -3,6 +3,8 @@ import { VoiceState } from "discord.js";
 import { getVoiceConnection } from "@discordjs/voice";
 import { stopMusic } from "../../Util/Queue";
 import { prisma } from "../../Util/Prisma";
+import { getMainMessage } from "../../Util/Util";
+import { getDefaultEmbed } from "../../Util/EmbedUtil";
 
 const VoiceStateUpdate = new Event("voiceStateUpdate", async function (
   bot,
@@ -26,21 +28,29 @@ const VoiceStateUpdate = new Event("voiceStateUpdate", async function (
 
     // 사람이 없고 봇만 있는 경우
     if (humanMembers.size === 0) {
-      // 음악 중지
-      await stopMusic(oldState.guild.id);
-
-      // 큐 초기화
-      await prisma.music.deleteMany({
-        where: {
-          guildId: oldState.guild.id,
-        },
-      });
-
-      // 봇 연결 해제
+      const message = await getMainMessage(oldState.guild.id);
       const connection = getVoiceConnection(oldState.guild.id);
-      if (connection) {
-        connection.destroy();
-      }
+
+      await Promise.all([
+        // 음악 중지
+        stopMusic(oldState.guild.id),
+
+        // 큐 초기화
+        prisma.music.deleteMany({
+          where: {
+            guildId: oldState.guild.id,
+          },
+        }),
+
+        // 임베드 초기화
+        message?.edit({
+          embeds: [getDefaultEmbed()],
+          files: [`${__dirname}/../../Image/mari.jpg`],
+        }),
+
+        // 봇 연결 해제
+        connection?.destroy(),
+      ]);
     }
   }
 });
