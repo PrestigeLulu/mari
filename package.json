@@ -7,7 +7,7 @@
     "prisma": "prisma db push"
   },
   "dependencies": {
-    "@distube/ytdl-core": "^4.16.8",
+    "@distube/ytdl-core": "^4.16.9",
     "discord.js": "^14.14.1",
     "ffmpeg-static": "^5.2.0",
     "libsodium-wrappers": "^0.7.13",
