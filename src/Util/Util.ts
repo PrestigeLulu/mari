@@ -38,12 +38,29 @@ export function getGuild(guildId: string) {
 }
 
 export async function getMainMessage(guildId: string) {
-  const guild = await getGuild(guildId);
-  if (!guild) return null;
-  const channel = bot.guilds.cache
-    .get(guildId)
-    ?.channels.cache.get(guild.channelId);
-  if (!channel) return null;
-  if (!(channel instanceof TextChannel)) return null;
-  return channel.messages.fetch(guild.messageId);
+  try {
+    const guild = await getGuild(guildId);
+    if (!guild) {
+      console.log(`Guild not found: ${guildId}`);
+      return null;
+    }
+
+    const channel = bot.guilds.cache
+      .get(guildId)
+      ?.channels.cache.get(guild.channelId);
+    if (!channel) {
+      console.log(`Channel not found: ${guild.channelId}`);
+      return null;
+    }
+
+    if (!(channel instanceof TextChannel)) {
+      console.log(`Channel is not a text channel: ${guild.channelId}`);
+      return null;
+    }
+
+    return await channel.messages.fetch(guild.messageId);
+  } catch (error) {
+    console.error("getMainMessage 처리 중 오류 발생:", error);
+    return null;
+  }
 }

@@ -57,21 +57,26 @@ export async function removeMusic(
   id: string,
   noPlay: boolean = false
 ) {
-  await prisma.music.delete({
-    where: {
-      id: id,
-    },
-  });
-  if (noPlay) return;
-  if ((await getMusics(guildId)).length > 0) {
-    await playMusic(guildId);
-  } else {
-    const message = await getMainMessage(guildId);
-    if (!message) return;
-    await message.edit({
-      embeds: [getDefaultEmbed()],
-      files: [`${__dirname}/../Image/mari.jpg`],
+  try {
+    await prisma.music.delete({
+      where: {
+        id: id,
+      },
     });
+    if (noPlay) return;
+    if ((await getMusics(guildId)).length > 0) {
+      await playMusic(guildId);
+    } else {
+      const message = await getMainMessage(guildId);
+      if (message) {
+        await message.edit({
+          embeds: [getDefaultEmbed()],
+          files: [`${__dirname}/../Image/mari.jpg`],
+        });
+      }
+    }
+  } catch (error) {
+    console.error("removeMusic 처리 중 오류 발생:", error);
   }
 }
 
@@ -110,22 +115,12 @@ export async function playMusic(guildId: string) {
     // musics.url ?v= 다음부터
     const id = musics.url.split("?v=")[1];
     const video = await ytSearch({ videoId: id });
-    // const stream = await play.stream_from_info(yt_info);
-    /* const resource = createAudioResource(stream.stream, {
-      inputType: stream.type,
-    }); */
     const stream = ytdl(musics.url, {
       filter: "audioonly",
       highWaterMark: 1 << 30,
       liveBuffer: 1 << 30,
     });
     let resource = createAudioResource(stream);
-    /* let resource = createAudioResource(stream.stream, {
-      inputType: stream.type,
-    }); */
-    /* resource = createAudioResource(
-      path.join(__dirname, "songs", "imyours.mp3")
-    ); */
 
     connection.subscribe(player);
     player.play(resource);
@@ -133,22 +128,20 @@ export async function playMusic(guildId: string) {
       try {
         await removeMusic(guildId, musics.id);
       } catch (e) {
-        console.log(e);
+        console.error("AudioPlayer Idle 상태 처리 중 오류:", e);
       }
     });
     player.on("error", async (error: any) => {
-      console.log(error);
+      console.error("AudioPlayer 에러 발생:", error);
     });
     const message = await getMainMessage(guildId);
-    if (!message) {
-      console.log("No message found");
-      return;
+    if (message) {
+      await message.edit({
+        embeds: [getMusicEmbed(video)],
+        files: [],
+      });
     }
-    await message.edit({
-      embeds: [getMusicEmbed(video)],
-      files: [],
-    });
-  } catch (e: any) {
-    console.log(e);
+  } catch (error) {
+    console.error("playMusic 처리 중 오류 발생:", error);
   }
 }

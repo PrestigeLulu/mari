@@ -28,29 +28,33 @@ const VoiceStateUpdate = new Event("voiceStateUpdate", async function (
 
     // 사람이 없고 봇만 있는 경우
     if (humanMembers.size === 0) {
-      const message = await getMainMessage(oldState.guild.id);
-      const connection = getVoiceConnection(oldState.guild.id);
+      try {
+        const message = await getMainMessage(oldState.guild.id);
+        const connection = getVoiceConnection(oldState.guild.id);
 
-      await Promise.all([
         // 음악 중지
-        stopMusic(oldState.guild.id),
+        await stopMusic(oldState.guild.id);
 
         // 큐 초기화
-        prisma.music.deleteMany({
+        await prisma.music.deleteMany({
           where: {
             guildId: oldState.guild.id,
           },
-        }),
+        });
 
-        // 임베드 초기화
-        message?.edit({
-          embeds: [getDefaultEmbed()],
-          files: [`${__dirname}/../../Image/mari.jpg`],
-        }),
+        // 메시지가 존재하는 경우에만 메시지 업데이트
+        if (message) {
+          await message.edit({
+            embeds: [getDefaultEmbed()],
+            files: [`${__dirname}/../../Image/mari.jpg`],
+          });
+        }
 
         // 봇 연결 해제
-        connection?.destroy(),
-      ]);
+        connection?.destroy();
+      } catch (error) {
+        console.error("VoiceStateUpdate 처리 중 오류 발생:", error);
+      }
     }
   }
 });

@@ -95,10 +95,10 @@
     tslib "^2.6.2"
     ws "^8.14.2"
 
-"@distube/ytdl-core@^4.16.9":
-  version "4.16.9"
-  resolved "https://registry.npmjs.org/@distube/ytdl-core/-/ytdl-core-4.16.9.tgz"
-  integrity sha512-eRYM3lDR1/1ZB+k6jzIdR+8m9VsYEqjz9+DstX1S/aW1f2rlbj22WCdrRbE+sE3DJW8DLJEp69akfjWqQ+nKIw==
+"@distube/ytdl-core@^4.16.10":
+  version "4.16.10"
+  resolved "https://registry.npmjs.org/@distube/ytdl-core/-/ytdl-core-4.16.10.tgz"
+  integrity sha512-KFKZtNlynOO0PYxelUF5h2bKyAU1d8fe6aZmo+gxWt7H2MQbd0bUeyV4y9iWhI57nukjkSXXQGB625CfhrVdGQ==
   dependencies:
     http-cookie-agent "^7.0.1"
     https-proxy-agent "^7.0.6"
