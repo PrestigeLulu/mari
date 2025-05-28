@@ -23,8 +23,8 @@ export function upsertGuild(
   });
 }
 
-export function getGuild(guildId: string) {
-  return prisma.guild.findUnique({
+export async function getGuild(guildId: string) {
+  const guild = await prisma.guild.findUnique({
     where: {
       id: guildId,
     },
@@ -35,6 +35,10 @@ export function getGuild(guildId: string) {
       musics: true,
     },
   });
+  if (!guild) {
+    return null;
+  }
+  return guild;
 }
 
 export async function getMainMessage(guildId: string) {
