@@ -1,10 +1,6 @@
 import Event from "../../Structures/Event";
 import { VoiceState } from "discord.js";
-import {
-  getVoiceConnection,
-  VoiceConnectionStatus,
-  entersState,
-} from "@discordjs/voice";
+import { getVoiceConnection } from "@discordjs/voice";
 import { stopMusic } from "../../Util/Queue";
 import { prisma } from "../../Util/Prisma";
 import { getMainMessage } from "../../Util/Util";
@@ -20,42 +16,6 @@ const VoiceStateUpdate = new Event("voiceStateUpdate", async function (
 
   // 봇이 나간 경우는 무시
   if (oldState.member?.user.bot) return;
-
-  const connection = getVoiceConnection(oldState.guild.id);
-  if (connection) {
-    // 연결 상태 모니터링
-    connection.on(VoiceConnectionStatus.Disconnected, async () => {
-      try {
-        // 5초 안에 재연결 시도
-        await Promise.race([
-          entersState(connection, VoiceConnectionStatus.Signalling, 5_000),
-          entersState(connection, VoiceConnectionStatus.Connecting, 5_000),
-        ]);
-      } catch (error) {
-        // 재연결 실패시 연결 종료
-        connection.destroy();
-        await stopMusic(oldState.guild.id);
-        console.error("Voice connection destroyed due to timeout:", error);
-      }
-    });
-
-    connection.on(VoiceConnectionStatus.Destroyed, async () => {
-      // 연결이 완전히 끊어진 경우 큐 초기화
-      await prisma.music.deleteMany({
-        where: {
-          guildId: oldState.guild.id,
-        },
-      });
-
-      const message = await getMainMessage(oldState.guild.id);
-      if (message) {
-        await message.edit({
-          embeds: [getDefaultEmbed()],
-          files: [`${__dirname}/../../Image/mari.jpg`],
-        });
-      }
-    });
-  }
 
   // 음성 채널에서 나간 경우
   if (oldState.channelId && !newState.channelId) {
