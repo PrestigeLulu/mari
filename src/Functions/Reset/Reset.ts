@@ -4,8 +4,8 @@ import { prisma } from "../../Util/Prisma";
 
 const slash = new SlashCommandBuilder()
   .setName("reset")
-  .setDescription("Reset the queue")
-  .setDefaultMemberPermissions(PermissionFlagsBits.Administrator);
+  .setDescription("Reset the queue");
+// .setDefaultMemberPermissions(PermissionFlagsBits.Administrator);
 
 const command = new SlashCommand(slash, async (bot, interaction) => {
   const guild = interaction.guild;
