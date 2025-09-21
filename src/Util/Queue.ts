@@ -22,9 +22,9 @@ export async function getMusics(guildId: string) {
   });
 }
 
-export async function addMusic(guildId: string, url: string) {
-  try {
-    const guild = await prisma.guild.update({
+export function addMusic(guildId: string, url: string) {
+  prisma.guild
+    .update({
       where: {
         id: guildId,
       },
@@ -38,18 +38,25 @@ export async function addMusic(guildId: string, url: string) {
       select: {
         musics: true,
       },
+    })
+    .then((guild) => {
+      if (!guild) {
+        console.log("Guild not found");
+        return;
+      }
+      if (guild.musics.length === 1) {
+        playMusic(guildId)
+          .then(() => {
+            console.log("Playing music");
+          })
+          .catch((e: any) => {
+            console.log(e.message);
+          });
+      }
+    })
+    .catch((e: any) => {
+      console.log(e.message);
     });
-    if (!guild) {
-      console.log("Guild not found");
-      return;
-    }
-    if (guild.musics.length === 1) {
-      await playMusic(guildId);
-      console.log("Playing music");
-    }
-  } catch (e: any) {
-    console.log(e.message);
-  }
 }
 
 export async function removeMusic(
