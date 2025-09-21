@@ -5,6 +5,7 @@ import { stopMusic } from "../../Util/Queue";
 import { prisma } from "../../Util/Prisma";
 import { getMainMessage } from "../../Util/Util";
 import { getDefaultEmbed } from "../../Util/EmbedUtil";
+import { removePlayer } from "../../Util/playerRegistry";
 
 const VoiceStateUpdate = new Event("voiceStateUpdate", async function (
   bot,
@@ -52,6 +53,7 @@ const VoiceStateUpdate = new Event("voiceStateUpdate", async function (
 
         // 봇 연결 해제
         connection?.destroy();
+        removePlayer(oldState.guild.id);
       } catch (error) {
         console.error("VoiceStateUpdate 처리 중 오류 발생:", error);
       }

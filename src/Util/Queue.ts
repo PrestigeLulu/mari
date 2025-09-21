@@ -4,15 +4,29 @@ import {
   AudioPlayerStatus,
   createAudioPlayer,
   createAudioResource,
+  demuxProbe,
   getVoiceConnection,
+  StreamType,
   VoiceConnectionConnectingState,
 } from "@discordjs/voice";
 import { getDefaultEmbed, getMusicEmbed } from "./EmbedUtil";
 import ytdl from "@distube/ytdl-core";
 import ytSearch from "yt-search";
+import { getOrCreatePlayer } from "./playerRegistry";
 
 export async function getMusics(guildId: string) {
   return prisma.music.findMany({
+    where: {
+      guildId: guildId,
+    },
+    orderBy: {
+      createdAt: "asc",
+    },
+  });
+}
+
+export async function getFirstMusics(guildId: string) {
+  return prisma.music.findFirst({
     where: {
       guildId: guildId,
     },
@@ -108,39 +122,34 @@ export async function stopMusic(guildId: string) {
 
 export async function playMusic(guildId: string) {
   try {
-    const musics = (await getMusics(guildId))[0];
-    if (!musics) {
+    const music = await getFirstMusics(guildId);
+    if (!music) {
       console.log("No music found");
       return;
     }
-    const player = createAudioPlayer();
+    const player = getOrCreatePlayer(guildId);
     const connection = getVoiceConnection(guildId);
     if (!connection) {
       console.log("No connection found");
       return;
     }
     // musics.url ?v= 다음부터
-    const id = musics.url.split("?v=")[1];
+    const id = music.url.split("?v=")[1];
     const video = await ytSearch({ videoId: id });
-    const stream = ytdl(musics.url, {
+    const stream = ytdl(music.url, {
       filter: "audioonly",
-      highWaterMark: 1 << 30,
-      liveBuffer: 1 << 30,
+      quality: "highestaudio",
+      highWaterMark: 1 << 25, // 32MB 정도 (16~64MB 권장)
+      liveBuffer: 0,
+      dlChunkSize: 0,
     });
-    let resource = createAudioResource(stream);
+    const { stream: probed, type } = await demuxProbe(stream);
+    const resource = createAudioResource(probed, {
+      inputType: type ?? StreamType.Arbitrary,
+    });
 
-    connection.subscribe(player);
     player.play(resource);
-    player.on(AudioPlayerStatus.Idle, async () => {
-      try {
-        await removeMusic(guildId, musics.id);
-      } catch (e) {
-        console.error("AudioPlayer Idle 상태 처리 중 오류:", e);
-      }
-    });
-    player.on("error", async (error: any) => {
-      console.error("AudioPlayer 에러 발생:", error);
-    });
+
     const message = await getMainMessage(guildId);
     if (message) {
       await message.edit({
