@@ -26,7 +26,6 @@ const VoiceStateUpdate = new Event("voiceStateUpdate", async function (
     // 채널에 남은 멤버 확인
     const members = voiceChannel.members;
     const humanMembers = members.filter((member) => !member.user.bot);
-
     // 사람이 없고 봇만 있는 경우
     if (humanMembers.size === 0) {
       try {

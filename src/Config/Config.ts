@@ -1,5 +1,3 @@
-import {config} from 'dotenv';
+import "dotenv/config";
 
-config();
-
-export const TOKEN: string = process.env.TOKEN || '';
+export const TOKEN: string = process.env.TOKEN || "";

@@ -10,7 +10,7 @@
     "rootDir": "./",
     "baseUrl": "./",
     "paths": {
-      "*": ["node_modules/*"]
+      "@/*": ["./src/*"]
     }
   },
   "include": ["**/*.ts"],

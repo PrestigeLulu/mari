@@ -56,7 +56,7 @@ export default function Initialize(bot: Bot): void {
     }
   );
   const commandData: ApplicationCommandDataResolvable[] = [];
-  bot.on("ready", () => {
+  bot.on("clientReady", () => {
     bot.application?.commands.cache.clear();
     bot.application?.commands.set(commandData);
   });

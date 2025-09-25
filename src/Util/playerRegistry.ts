@@ -20,7 +20,9 @@ export function getOrCreatePlayer(guildId: string) {
     player.on(AudioPlayerStatus.Idle, async () => {
       try {
         const music = await getFirstMusics(guildId);
-        await removeMusic(guildId, music.id);
+        if (music) {
+          await removeMusic(guildId, music.id);
+        }
       } catch (e) {
         console.error("AudioPlayer Idle 상태 처리 중 오류:", e);
       }

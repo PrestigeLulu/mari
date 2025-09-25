@@ -1,4 +1,8 @@
-import { PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
+import {
+  PermissionFlagsBits,
+  SlashCommandBuilder,
+  InteractionContextType,
+} from "discord.js";
 import SlashCommand from "../../Structures/SlashCommand";
 import { prisma } from "../../Util/Prisma";
 
@@ -16,12 +20,15 @@ const command = new SlashCommand(slash, async (bot, interaction) => {
         guildId: guild.id,
       },
     });
-    await interaction.reply({ content: "Resetted the queue", ephemeral: true });
+    await interaction.reply({
+      content: "Resetted the queue",
+      flags: "Ephemeral",
+    });
   } catch (e: any) {
     console.error(e);
     await interaction.reply({
       content: "Failed to reset the queue",
-      ephemeral: true,
+      flags: "Ephemeral",
     });
   }
 });

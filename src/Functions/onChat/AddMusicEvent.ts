@@ -1,17 +1,22 @@
-import Event from "../../Structures/Event";
-import { Message } from "discord.js";
-import { getFailEmbed } from "../../Util/EmbedUtil";
-import { addMusic, skipMusic } from "../../Util/Queue";
-import { joinVoiceChannel } from "@discordjs/voice";
-import { getGuild } from "../../Util/Util";
+import Event from "@/Structures/Event";
+import { Message, TextChannel } from "discord.js";
+import { getFailEmbed } from "@/Util/EmbedUtil";
+import { addMusic, skipMusic } from "@/Util/Queue";
+import {
+  getVoiceConnection,
+  joinVoiceChannel,
+  type DiscordGatewayAdapterCreator,
+} from "@discordjs/voice";
+import { getGuild } from "@/Util/Util";
 import ytSearch from "yt-search";
 
-const Ready = new Event("messageCreate", async function (
+const AddMusic = new Event("messageCreate", async function (
   bot,
   message: Message
 ) {
   // 채널 확인
   if (!message.guildId || !message.guild) return;
+  if (!(message.channel instanceof TextChannel)) return;
   if (message.author.bot) return;
   const guildData = await getGuild(message.guildId);
   if (!guildData) return;
@@ -29,10 +34,33 @@ const Ready = new Event("messageCreate", async function (
     await skipMusic(message.guildId, Number(number));
     return;
   }
+
+  /* const yt = await getYouTube();
+  const videos = (
+    await yt.search(song, {
+      type: "video",
+    })
+  ).videos;
+
+  if (!videos.length) {
+    const res = await message.channel.send({
+      content: message.author.toString(),
+      embeds: [getFailEmbed()],
+      files: [`${__dirname}/../../Image/sadmari.jpg`],
+    });
+    setTimeout(() => {
+      res.delete();
+    }, 1000 * 10);
+    return;
+  }
+
+  const first = videos.first();
+  first.
+ */
   // 제목으로 찾기
   const videos = (await ytSearch(song)).videos;
   const video = videos[0];
-  if (!video) {
+  if (!videos) {
     const res = await message.channel.send({
       content: message.author.toString(),
       embeds: [getFailEmbed()],
@@ -49,7 +77,15 @@ const Ready = new Event("messageCreate", async function (
     guildId: message.guildId,
     adapterCreator: message.guild.voiceAdapterCreator,
   });
-  await addMusic(message.guildId, video.url);
+  console.log(video.title);
+  await addMusic(
+    message.guildId,
+    video.url,
+    video.title,
+    video.timestamp,
+    video.author.name || "",
+    video.thumbnail
+  );
 });
 
-export default Ready;
+export default AddMusic;

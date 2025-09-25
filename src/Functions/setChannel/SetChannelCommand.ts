@@ -18,14 +18,14 @@ const setChannelCommand = new SlashCommand(slashCommand, async function (
   if (!(channel instanceof TextChannel)) {
     await interaction.reply({
       embeds: [getColorEmbed().setTitle("채팅 채널로만 골라줘!")],
-      ephemeral: true,
+      flags: "Ephemeral",
     });
     return;
   }
   if (!interaction.guildId) {
     await interaction.reply({
       embeds: [getColorEmbed().setTitle("서버에서만 사용할 수 있어!")],
-      ephemeral: true,
+      flags: "Ephemeral",
     });
     return;
   }
@@ -42,7 +42,7 @@ const setChannelCommand = new SlashCommand(slashCommand, async function (
         .setTitle("채널이 설정되었어!")
         .setDescription(`${channel.name} 채널에서 보자!`),
     ],
-    ephemeral: true,
+    flags: "Ephemeral",
   });
 });
 

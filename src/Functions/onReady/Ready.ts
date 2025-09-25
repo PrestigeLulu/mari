@@ -5,6 +5,6 @@ function onCall(bot: Bot): void {
   console.log(`Logged in ${bot.user?.tag}`);
 }
 
-const Ready = new Event("ready", onCall);
+const Ready = new Event("clientReady", onCall);
 
 export default Ready;

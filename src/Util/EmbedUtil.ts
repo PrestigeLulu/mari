@@ -5,10 +5,10 @@ export const getColorEmbed = () => new EmbedBuilder().setColor("#cf85ff");
 
 export const getDefaultEmbed = () =>
   getColorEmbed()
-    .setTitle("🎤 Let's sing together!")
+    .setTitle("🎤 같이 노래할사람!")
     .setDescription(
-      "Type song name that you wanna hear in this channel!" +
-        "\nAnd you can skip if type `!s`"
+      "여기다가 원하는 곡의 제목을 적어줘!" +
+        "\n스킵을 하고싶다면 이 명령어를 적어줘 `!s`"
     )
     .setImage("attachment://mari.jpg");
 
@@ -18,12 +18,18 @@ export const getFailEmbed = () =>
     .setDescription("Can you try again?")
     .setImage("attachment://sadmari.jpg");
 
-export const getMusicEmbed = (info: VideoMetadataResult) =>
+export const getMusicEmbed = (
+  title: string,
+  url: string,
+  thumbnail: string,
+  timestamp: string,
+  author: string
+) =>
   getColorEmbed()
-    .setTitle(`🎤 Now singing`)
-    .setDescription(`**Playing **\n[${info.title}](${info.url})`)
-    .setThumbnail(info.thumbnail)
+    .setTitle(`🎤 노래 부르는중`)
+    .setDescription(`**앙기모찌 **\n[${title}](${url})`)
+    .setThumbnail(thumbnail)
     .setFields([
-      { name: "timestamp", value: info.timestamp, inline: true },
-      { name: "channel", value: info.author.name || "", inline: true },
+      { name: "시간", value: timestamp, inline: true },
+      { name: "채널", value: author, inline: true },
     ]);

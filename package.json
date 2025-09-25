@@ -2,26 +2,27 @@
   "name": "discord-bot-template",
   "main": "index.ts",
   "scripts": {
-    "start": "ts-node index.ts",
-    "dev": "nodemon index.ts",
+    "start": "ts-node -r tsconfig-paths/register index.ts",
+    "dev": "nodemon --exec ts-node -r tsconfig-paths/register index.ts",
     "prisma": "prisma db push"
   },
   "dependencies": {
-    "@distube/ytdl-core": "^4.16.12",
-    "@snazzah/davey": "^0.1.6",
-    "discord.js": "^14.14.1",
+    "@snazzah/davey": "^0.1.7",
+    "discord.js": "^14.22.1",
     "ffmpeg-static": "^5.2.0",
-    "libsodium-wrappers": "^0.7.13",
-    "typescript": "^5.8.2",
-    "yt-search": "^2.12.1"
+    "libsodium-wrappers": "^0.7.15",
+    "typescript": "^5.9.2",
+    "youtubei.js": "^15.1.1",
+    "yt-search": "^2.13.1"
   },
   "devDependencies": {
     "@discordjs/voice": "^0.19.0",
-    "@prisma/client": "^5.17.0",
+    "@prisma/client": "^6.16.2",
     "@types/yt-search": "^2.10.3",
-    "dotenv": "^16.3.1",
-    "nodemon": "^3.0.2",
-    "prisma": "^5.17.0",
-    "ts-node": "^10.9.2"
+    "dotenv": "^17.2.2",
+    "nodemon": "^3.1.10",
+    "prisma": "^6.16.2",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0"
   }
 }
